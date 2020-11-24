@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace命名空间，为了对sql语句进行隔离，方便管理 ，mapper开发dao方式，使用namespace有特殊作用 -->
+<mapper namespace="com.etc.lol.dao.ForumDao">
+    <!-- 在mapper.xml文件中配置很多的sql语句，执行每个sql语句时，封装为MappedStatement对象
+    mapper.xml以statement为单位管理sql语句
+     -->
+
+
+    <select id="queryAllForum" resultType="com.etc.lol.entity.Forum">
+        select * from my_forum
+    </select>
+
+    <select id="queryAllForumCount" resultType="Integer">
+        select count(*) from my_forum
+    </select>
+
+    <select id="queryAllForumByPage" resultType="com.etc.lol.dto.forumuser">
+        select * from my_user right join my_forum on user_id=forum_user limit #{0},#{1}
+    </select>
+
+    <update id="givelike" parameterType="Integer">
+        update my_forum set forum_good=forum_good+1 where forum_id=#{0}
+    </update>
+
+    <update id="cancellike" parameterType="Integer">
+        update my_forum set forum_good=forum_good-1 where forum_id=#{0}
+    </update>
+
+    <insert id="collectForum">
+        insert into my_collect (collect_user,collect_forum,collect_time) values (#{0},#{1},#{2})
+    </insert>
+
+    <delete id="cancelCollectForum">
+        delete from my_collect where collect_forum=#{0} and collect_user=#{1}
+    </delete>
+
+    <select id="queryForumByKey" resultType="com.etc.lol.dto.forumuser">
+        select * from my_user left join my_forum on user_id=forum_user where forum_title like #{0} limit #{1},#{2}
+    </select>
+
+    <select id="queryForumKeyCount" resultType="Integer" parameterType="String">
+        select count(*) from my_forum where forum_title like #{0}
+    </select>
+
+    <select id="queryForumByid" resultType="com.etc.lol.dto.forumuser" parameterType="Integer">
+        select * from my_user left join my_forum on user_id=forum_user where forum_id=#{0}
+    </select>
+
+    <insert id="replyForum" >
+        insert into my_reply (reply_user,reply_forum,reply_text,reply_time) values (#{0},#{1},#{2},#{3})
+    </insert>
+
+    <select id="queryReplyById" resultType="com.etc.lol.dto.replyuser" parameterType="Integer">
+        select * from my_user as u right join (select * from my_reply left join my_forum on reply_forum=forum_id) as rf on u.user_id=rf.reply_user where rf.forum_id=#{0}
+    </select>
+
+    <select id="queryIsCollect" resultType="com.etc.lol.entity.Collect">
+        select * from my_collect where collect_user=#{0} and collect_forum=#{1}
+    </select>
+
+    <select id="queryReplyByIdForPage" resultType="com.etc.lol.dto.replyuser">
+        select * from my_user as u right join (select * from my_reply left join my_forum on reply_forum=forum_id) as rf on u.user_id=rf.reply_user where rf.forum_id=#{0} limit #{1},#{2}
+    </select>
+
+    <select id="queryReplyByIdCount" resultType="Integer">
+        select count(*) from my_user as u right join (select * from my_reply left join my_forum on reply_forum=forum_id) as rf on u.user_id=rf.reply_user where rf.forum_id=#{0}
+    </select>
+
+    <select id="queryMyAllCollect" resultType="com.etc.lol.dto.collectuser">
+        select * from my_user as u right join (select * from my_collect left join my_forum on collect_forum=forum_id)as cf on u.user_id=cf.collect_user where u.user_id=#{0} limit #{1},#{2}
+    </select>
+
+    <select id="queryMyCollectCount" resultType="Integer">
+        select count(*) from my_collect where collect_user=#{0}
+    </select>
+
+    <insert id="addForum">
+        insert into my_forum (forum_user,forum_title,forum_text,forum_time,forum_browse) values (#{0},#{1},#{2},#{3},#{4})
+    </insert>
+
+</mapper>

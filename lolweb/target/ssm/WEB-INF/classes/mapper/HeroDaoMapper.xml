@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace命名空间，为了对sql语句进行隔离，方便管理 ，mapper开发dao方式，使用namespace有特殊作用 -->
+<mapper namespace="com.etc.lol.dao.HeroDao">
+    <!-- 在mapper.xml文件中配置很多的sql语句，执行每个sql语句时，封装为MappedStatement对象
+    mapper.xml以statement为单位管理sql语句
+     -->
+
+<resultMap id="myhero1" type="hero">
+        <id property="hero_id" column="hero_id"></id>
+        <result property="hero_name" column="hero_name"></result>
+        <result property="hero_title" column="hero_title"></result>
+    <association property="hero_profession" select="com.etc.test.dao.ProfessionDao.queryPosById" column="hero_profession" javaType="profession">
+        <id property="profession_id" column="profession_id"></id>
+        <result property="profession_name" column="profession_name"></result>
+        <result property="profession_logo" column="profession_logo"></result>
+    </association>
+    <association property="hero_influence" select="com.etc.test.dao.InfluenceDao.queryInfById" column="hero_influence" javaType="influence">
+        <id property="influence_id" column="influence_id"></id>
+        <result property="influence_name" column="influence_name"></result>
+        <result property="influence_logo" column="influence_logo"></result>
+    </association>
+</resultMap>
+
+    
+    <select id="queryAll" resultType="com.etc.lol.entity.Hero">
+    select * from my_hero
+    </select>
+
+
+    <select id="queryFourHero" resultType="com.etc.lol.entity.Hero">
+        select * from my_hero limit 0,4
+    </select>
+
+    <select id="queryHeroById"  resultType="com.etc.lol.dto.heroDto" >
+          select * from (select * from my_influence as i right join (select * from my_hero as h left join my_profession as p on h.hero_profession=p.profession_id) as hp on i.influence_id=hp.hero_influence)as d where d.hero_id = #{0}
+    </select>
+
+    <select id="queryAllByPage"  resultType="com.etc.lol.entity.Hero">
+        select * from my_hero limit #{0},#{1}
+    </select>
+
+    <select id="queryAllHeroCount" resultType="Integer">
+        select count(*) from my_hero
+    </select>
+
+    <select id="queryHeroByKey" resultType="com.etc.lol.entity.Hero" parameterType="String">
+        select * from my_hero where hero_name like #{0} or hero_title like #{0}
+    </select>
+
+</mapper>
+

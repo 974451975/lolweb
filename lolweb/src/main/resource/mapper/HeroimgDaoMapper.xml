@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace命名空间，为了对sql语句进行隔离，方便管理 ，mapper开发dao方式，使用namespace有特殊作用 -->
+<mapper namespace="com.etc.lol.dao.HeroimgDao">
+    <!-- 在mapper.xml文件中配置很多的sql语句，执行每个sql语句时，封装为MappedStatement对象
+    mapper.xml以statement为单位管理sql语句
+     -->
+
+    <select id="queryALLHeroimg" resultType="com.etc.lol.entity.Heroimg">
+    select * from my_heroimg
+    </select>
+    <select id="queryHeroimgByKey" resultType="com.etc.lol.entity.Heroimg" parameterType="String">
+        select * from my_heroimg where heroimg_img like #{0}
+    </select>
+    <select id="queryHeroimgById" resultType="com.etc.lol.entity.Heroimg">
+        SELECT * FROM my_heroimg RIGHT JOIN my_hero on my_heroimg.heroimg_hero=my_hero.hero_id where my_hero.hero_id=#{0}
+    </select>
+    <select id="queryAllHeroimgByPage"  resultType="com.etc.lol.entity.Heroimg">
+        select * from my_heroimg limit #{0},#{1}
+    </select>
+    <select id="queryAllHeroimgCount" resultType="Integer">
+        select count(*) from my_heroimg
+    </select>
+
+</mapper>

@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace命名空间，为了对sql语句进行隔离，方便管理 ，mapper开发dao方式，使用namespace有特殊作用 -->
+<mapper namespace="com.etc.lol.dao.StoryDao">
+
+<!--<insert id="addStory" parameterType="com.etc.lol.entity.Story">-->
+<!--    insert into my_story(story_hero,story_title,story_context) values(#{story_hero},#{story_title},#{story_context})-->
+<!--</insert>-->
+    <select id="queryStoryAll" resultType="com.etc.lol.entity.Story">
+    select * from my_story
+    </select>
+    <select id="queryFourStory" resultType="com.etc.lol.entity.Story">
+    select * from my_story limit 0,4
+    </select>
+    <select id="queryAllStoryByPage"  resultType="com.etc.lol.entity.Story">
+        select * from my_story limit #{0},#{1}
+    </select>
+    <select id="queryAllStoryCount" resultType="Integer">
+        select count(*) from my_story
+    </select>
+    <select id="queryHeroStoryById" resultType="com.etc.lol.dto.herostoryDto">
+        SELECT * FROM my_hero as h LEFT join (SELECT * FROM my_herostory as hs LEFT JOIN my_story as s on hs.herostory_story=s.story_id) as hss on h.hero_id=hss.herostory_hero  where hss.herostory_hero=#{0}
+    </select>
+    <select id="queryStoryByKey" resultType="com.etc.lol.entity.Story" parameterType="String">
+        select * from my_story where  story_title like #{0}
+    </select>
+    <select id="queryStoryIndexById" resultType="com.etc.lol.entity.Story">
+        select * from my_story where story_id=#{0}
+    </select>
+
+</mapper>
+
